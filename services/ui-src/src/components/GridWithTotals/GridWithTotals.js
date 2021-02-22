@@ -138,7 +138,7 @@ const GridWithTotals = props => {
                       onChange={event =>
                         updateGrid(rowIndex, columnIndex, event)
                       }
-                      defaultValue={column}
+                      defaultValue={"column"}
                     />
                   </td>
                 </React.Fragment>

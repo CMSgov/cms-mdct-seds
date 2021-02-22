@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.788.0",
+    "axios": "^0.21.1",
     "dynamodb-atomic-counter": "^0.1.1",
     "uuid": "^7.0.3"
   }

@@ -22,7 +22,30 @@ import TabContainer from "./layout/TabContainer";
 
 import GridWithTotals from "./GridWithTotals/GridWithTotals";
 
+import { Modal, useModal } from "@trussworks/react-uswds";
+
 const Example = () => {
+  /** Example of Modal Component Using Hooks */
+  const { isOpen, openModal, closeModal } = useModal();
+
+  const TestModal = ({ onClose, children }) => (
+    <Modal
+      title={<h2>Test Modal</h2>}
+      actions={
+        <>
+          <Button type="button" outline onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="button" onClick={onClose}>
+            Close
+          </Button>
+        </>
+      }
+    >
+      {children}
+    </Modal>
+  );
+
   let accordionItems = [
     {
       id: 1,
@@ -141,6 +164,16 @@ const Example = () => {
       </Grid>
       <Grid row={true}>
         <GridWithTotals gridData={gridDataItems} />
+      </Grid>
+      <Grid row={true}>
+        <Button type="button" onClick={openModal}>
+          Click to Open Modal
+        </Button>
+      </Grid>
+      <Grid>
+        <TestModal isOpen={isOpen} onClose={closeModal}>
+          <p>This is a modal that uses hooks!</p>
+        </TestModal>
       </Grid>
     </GridContainer>
   );
