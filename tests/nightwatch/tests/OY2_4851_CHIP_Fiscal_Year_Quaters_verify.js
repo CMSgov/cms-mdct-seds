@@ -5,9 +5,18 @@ module.exports = {
     before : function(browser) {
         console.log('Setting up the browser instance...');
         console.log('Opening the browser...')
-        let env = 'https://mdctsedsdev.cms.gov/';
-        console.log('Maximizing the browser window size...');
-        browser.windowMaximize().url(env);
+        browser.maximizeWindow().url(browser.launch_url).waitForElementPresent('body');
+        // Login credentails are pulled from .env files, this file should not be tracked and
+        // must be stated in the .gitignore file
+        const username = browser.globals.user;
+        const password = browser.globals.pass;
+
+        // Loing activities 
+        browser.useCss().click(".LoginWithOkta .LoaderButton");
+        browser.useCss().setValue("input#okta-signin-username", username).pause(100);
+        browser.useCss().setValue("input#okta-signin-password", password).pause(100);
+        browser.useCss().click("input#tandc");
+        browser.useCss().click("input#okta-signin-submit");
         browser.waitForElementPresent('body');
     },
 
@@ -24,17 +33,12 @@ module.exports = {
         let tab_2021_q2 = "(//ul[@class='quarterly-items'])[1]/li[2]/a";
 
         browser.useXpath();
-        browser.click(tab_2021);
+       // browser.click(tab_2021).pause(500);
         // Check for 2021 Quater 1
-        browser.click(tab_2021_q1);
-        browser.expect.element("//*[text()='Q1 2021 Report']").to.be.visible;
-        browser.back();
-       
+        browser.expect.element(tab_2021_q1).to.be.visible;
+      
         // Check for 2021 Quater 2
-        browser.click(tab_2021_q1);
-        browser.expect.element("//*[text()='Q2 2021 Report']").to.be.visible;
-        browser.back();
-
+        browser.expect.element(tab_2021_q2).to.be.visible;
     },
 
     'Check for year 2020 quarters': function(browser) {
@@ -48,24 +52,23 @@ module.exports = {
         browser.useXpath();
         browser.click(tab_2020);
         // Check for 2020 Quater 1
-        browser.click(tab_2020_q1);
-        browser.expect.element("//*[text()='Q1 2020 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2020_q1);
+        browser.expect.element(tab_2020_q1).to.be.visible;
+        //browser.back();
        
         // Check for 2020 Quater 2
-        browser.click(tab_2020_q2);
-        browser.expect.element("//*[text()='Q2 2020 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2020_q2);
+        browser.expect.element(tab_2020_q2).to.be.visible;
+       // browser.back();
 
         // Check for 2020 Quater 3
-        browser.click(tab_2020_q3);
-        browser.expect.element("//*[text()='Q3 2020 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2020_q3);
+        browser.expect.element(tab_2020_q3).to.be.visible;
+        //browser.back();
 
         // Check for 2020 Quater 4
-        browser.click(tab_2020_q4);
-        browser.expect.element("//*[text()='Q4 2020 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2020_q4);
+        browser.expect.element(tab_2020_q4).to.be.visible;
     }, 
 
     'Check for year 2019 quarters': function(browser) {
@@ -79,24 +82,24 @@ module.exports = {
         browser.click(tab_2019);
 
         // Check for 2020 Quater 1
-        browser.click(tab_2019_q1);
-        browser.expect.element("//*[text()='Q1 2019 Report']").to.be.visible;
-        browser.back();
+       // browser.click(tab_2019_q1);
+        browser.expect.element(tab_2019_q1).to.be.visible;
+       // browser.back();
        
         // Check for 2020 Quater 2
-        browser.click(tab_2019_q2);
-        browser.expect.element("//*[text()='Q2 2019 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2019_q2);
+        browser.expect.element(tab_2019_q2).to.be.visible;
+        //browser.back();
 
         // Check for 2020 Quater 3
-        browser.click(tab_2019_q3);
-        browser.expect.element("//*[text()='Q3 2019 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2019_q3);
+        browser.expect.element(tab_2019_q3).to.be.visible;
+        //browser.back();
 
         // Check for 2020 Quater 4
-        browser.click(tab_2019_q4);
-        browser.expect.element("//*[text()='Q4 2019 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2019_q4);
+        browser.expect.element(tab_2019_q4).to.be.visible;
+        //browser.back();
     }, 
 
     'Check for year 2018 quarters': function(browser) {
@@ -110,23 +113,23 @@ module.exports = {
         browser.click(tab_2018);
 
         // Check for 2020 Quater 1
-        browser.click(tab_2018_q1);
-        browser.expect.element("//*[text()='Q1 2018 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2018_q1);
+        browser.expect.element(tab_2018_q1).to.be.visible;
+        //browser.back();
        
         // Check for 2020 Quater 2
-        browser.click(tab_2018_q2);
-        browser.expect.element("//*[text()='Q2 2018 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2018_q2);
+        browser.expect.element(tab_2018_q2).to.be.visible;
+        //browser.back();
 
         // Check for 2020 Quater 3
-        browser.click(tab_2018_q3);
-        browser.expect.element("//*[text()='Q3 2018 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2018_q3);
+        browser.expect.element(tab_2018_q3).to.be.visible;
+        //browser.back();
 
         // Check for 2020 Quater 4
-        browser.click(tab_2018_q4);
-        browser.expect.element("//*[text()='Q4 2018 Report']").to.be.visible;
-        browser.back();
+        //browser.click(tab_2018_q4);
+        browser.expect.element(tab_2018_q4).to.be.visible;
+        //browser.back();
     }
 }
