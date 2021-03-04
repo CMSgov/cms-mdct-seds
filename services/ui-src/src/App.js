@@ -38,7 +38,7 @@ function App() {
         const userInfo = await Auth.currentSession();
         cnosole.log("LINE 39");
         console.log(JSON.stringify(userInfo, null, 2));
-        setEmail(userInfo.idToken.payload.email);
+        //setEmail(userInfo.idToken.payload.email);
         userHasAuthenticated(true);
       } catch (e) {
         if (e !== "No current user") {
