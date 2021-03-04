@@ -30,11 +30,11 @@ export default function Profile() {
     async function onLoad() {
       try {
         const userInfo = await loadProfile();
-        setEmail(userInfo.attributes.email);
-        setFirstName(capitalize(userInfo.attributes.first_name));
-        setLastName(capitalize(userInfo.attributes.last_name));
-        setRole(capitalize(userInfo.attributes.role));
-        setStates(formatStates(userInfo.attributes.states));
+        setEmail(userInfo.email);
+        setFirstName(capitalize(userInfo.first_name));
+        setLastName(capitalize(userInfo.last_name));
+        setRole(capitalize(userInfo.role));
+        setStates(formatStates(userInfo.states));
       } catch (e) {
         onError(e);
       }
@@ -50,7 +50,9 @@ export default function Profile() {
   }
 
   function saveProfile(user, userAttributes) {
+    console.log("profile.js");
     return Auth.updateUserAttributes(user, userAttributes);
+    console.log("profile.js");
   }
 
   function formatStates(states) {
@@ -74,7 +76,9 @@ export default function Profile() {
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
+    console.log("profile.js  2");
     let user = await Auth.currentAuthenticatedUser();
+    console.log("profile.js  2");
     try {
       await saveProfile(user, {
         first_name: firstName,

@@ -35,9 +35,13 @@ function App() {
       }
     } else {
       try {
+        console.log("app.js");
         const userInfo = await Auth.currentSession();
+        console.log("app.js");
         console.log("LINE 39");
         console.log(JSON.stringify(userInfo, null, 2));
+        console.log("email belowww");
+        console.log(userInfo.idToken.payload.email);
         //setEmail(userInfo.idToken.payload.email);
         userHasAuthenticated(true);
       } catch (e) {

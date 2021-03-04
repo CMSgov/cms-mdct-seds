@@ -30,7 +30,7 @@ const Header = () => {
         if (userInfo === null) {
           setIsAuthenticated(false);
         } else {
-          setEmail(userInfo.attributes.email);
+          //setEmail(userInfo.email);
           setIsAuthenticated(true);
         }
       } catch (e) {
@@ -47,7 +47,9 @@ const Header = () => {
       history.push("/login");
       history.go(0);
     } else {
+      console.log("header");
       await Auth.signOut();
+      console.log("header");
     }
 
     history.push("/login");
@@ -89,7 +91,7 @@ const Header = () => {
                 <Nav pullRight>
                   {isAuthenticated ? (
                     <>
-                      <NavDropdown id="User" title={email}>
+                      <NavDropdown id="User" title="My Profile">
                         <LinkContainer to="/profile">
                           <NavItem>User Profile</NavItem>
                         </LinkContainer>
