@@ -36,7 +36,7 @@ function App() {
     } else {
       try {
         const userInfo = await Auth.currentSession();
-        cnosole.log("LINE 39");
+        console.log("LINE 39");
         console.log(JSON.stringify(userInfo, null, 2));
         //setEmail(userInfo.idToken.payload.email);
         userHasAuthenticated(true);
