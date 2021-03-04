@@ -26,14 +26,18 @@ function App() {
       const userInfo = getLocalUserInfo();
 
       if (userInfo === null) {
+        console.log("LOCAL");
         history.push("/login");
       } else {
+        console.log("LOCAL");
         setEmail(userInfo.attributes.email);
         userHasAuthenticated(true);
       }
     } else {
       try {
         const userInfo = await Auth.currentSession();
+        cnosole.log("LINE 39");
+        console.log(JSON.stringify(userInfo, null, 2));
         setEmail(userInfo.idToken.payload.email);
         userHasAuthenticated(true);
       } catch (e) {
