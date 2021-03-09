@@ -8,7 +8,6 @@ export const main = handler(async (event) => {
     return null;
   }
 
-
   let data = JSON.parse(event.body);
 
   const params = {

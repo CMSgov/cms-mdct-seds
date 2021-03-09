@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useAppContext } from "../libs/contextLib";
 import "./Home.css";
 import HomeState from "./HomeState";
-import HomeBus from "./HomeBus";
-import HomeAdmin from "./HomeAdmin";
+// import HomeBus from "./HomeBus";
+// import HomeAdmin from "./HomeAdmin";
 import Unauthorized from "./Unauthorized";
 import { Grid, GridContainer } from "@trussworks/react-uswds";
 
@@ -24,21 +24,23 @@ export default function Home({ user }) {
   }, [isAuthenticated]);
 
   function renderLander() {
-    let content = null;
-    switch (user.role) {
-      case "state":
-        content = <HomeState />;
-        break;
-      case "business":
-        content = <HomeBus />;
-        break;
-      case "admin":
-        content = <HomeAdmin />;
-        break;
-      default:
-        content = <Unauthorized />;
-        break;
-    }
+    let content = <HomeState />;
+
+    // let content = null;
+    // switch (user.role) {
+    //   case "state":
+    //     content = <HomeState />;
+    //     break;
+    //   case "business":
+    //     content = <HomeBus />;
+    //     break;
+    //   case "admin":
+    //     content = <HomeAdmin />;
+    //     break;
+    //   default:
+    //     content = <Unauthorized />;
+    //     break;
+    // }
     return (
       <GridContainer className="container page-home">
         <Grid row>
