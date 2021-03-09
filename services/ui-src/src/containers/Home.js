@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import { useAppContext } from "../libs/contextLib";
+import { onError } from "../libs/errorLib";
 import "./Home.css";
-import HomeState from "./HomeState";
-// import HomeBus from "./HomeBus";
-// import HomeAdmin from "./HomeAdmin";
-import Unauthorized from "./Unauthorized";
-import { Grid, GridContainer } from "@trussworks/react-uswds";
+import { listAmendments } from "../libs/api";
+import { LinkContainer } from "react-router-bootstrap";
 
-export default function Home({ user }) {
+export default function Home() {
+  const [amendments, setAmendments] = useState([]);
   const { isAuthenticated } = useAppContext();
-  /* eslint-disable no-unused-vars */
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function onLoad() {
       if (!isAuthenticated) {
         return;
+      }
+
+      try {
+        const amendments = await loadAmendments();
+        setAmendments(amendments);
+      } catch (e) {
+        onError(e);
       }
 
       setIsLoading(false);
@@ -23,52 +29,58 @@ export default function Home({ user }) {
     onLoad();
   }, [isAuthenticated]);
 
-  function renderLander() {
-    let content = <HomeState />;
+  function loadAmendments() {
+    return listAmendments();
+  }
 
-    // let content = null;
-    // switch (user.role) {
-    //   case "state":
-    //     content = <HomeState />;
-    //     break;
-    //   case "business":
-    //     content = <HomeBus />;
-    //     break;
-    //   case "admin":
-    //     content = <HomeAdmin />;
-    //     break;
-    //   default:
-    //     content = <Unauthorized />;
-    //     break;
-    // }
-    return (
-      <GridContainer className="container page-home">
-        <Grid row>
-          <Grid col={12}>{content}</Grid>
-        </Grid>
-      </GridContainer>
+  function renderAmendmentsList(amendments) {
+    return [{}].concat(amendments).map((amendment, i) =>
+      i !== 0 ? (
+        <LinkContainer
+          key={amendment.amendmentId}
+          to={`/amendments/${amendment.amendmentId}`}
+        >
+          <ListGroupItem
+            header={amendment.transmittalNumber.trim().split("\n")[0]}
+          >
+            {"Created: " + new Date(amendment.createdAt).toLocaleString()}
+          </ListGroupItem>
+        </LinkContainer>
+      ) : (
+        <LinkContainer key="new" to="/amendments/new">
+          <ListGroupItem>
+            <h4>
+              <b>{"\uFF0B"}</b> Submit New APS
+            </h4>
+          </ListGroupItem>
+        </LinkContainer>
+      )
     );
   }
 
-  function renderUnauthorized() {
-    const content = <Unauthorized />;
-
+  function renderLander() {
     return (
-      <GridContainer className="container page-home">
-        <Grid row>
-          <Grid col={12}>{content}</Grid>
-        </Grid>
-      </GridContainer>
+      <div className="lander">
+        <h1>APS Submission App</h1>
+        <p>
+          ACME's Amendment to Planned Settlement (APS) submission application
+        </p>
+      </div>
+    );
+  }
+
+  function renderAmendments() {
+    return (
+      <div className="amendments">
+        <PageHeader>Your APS Submissions</PageHeader>
+        <ListGroup>{!isLoading && renderAmendmentsList(amendments)}</ListGroup>
+      </div>
     );
   }
 
   return (
     <div className="Home">
-      {/* TODO: Check for authentication */}
-      {/*{isAuthenticated ? renderLander() : renderUnauthorized()}*/}
-      {renderLander()}
+      {isAuthenticated ? renderAmendments() : renderLander()}
     </div>
   );
 }
-
-Home.propTypes = {};

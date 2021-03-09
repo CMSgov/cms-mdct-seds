@@ -4,7 +4,7 @@ import {
   HelpBlock,
   FormGroup,
   FormControl,
-  ControlLabel
+  ControlLabel,
 } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { useAppContext } from "../libs/contextLib";
@@ -20,7 +20,7 @@ export default function Signup() {
     email: "",
     password: "",
     confirmPassword: "",
-    confirmationCode: ""
+    confirmationCode: "",
   });
   const history = useHistory();
   const [newUser, setNewUser] = useState(null);
@@ -47,16 +47,14 @@ export default function Signup() {
     setIsLoading(true);
 
     try {
-      console.log("signup");
       const newUser = await Auth.signUp({
         username: fields.email,
         password: fields.password,
         attributes: {
           given_name: fields.firstName,
-          family_name: fields.lastName
-        }
+          family_name: fields.lastName,
+        },
       });
-      console.log("signup");
       setIsLoading(false);
       setNewUser(newUser);
     } catch (e) {
@@ -71,14 +69,9 @@ export default function Signup() {
     setIsLoading(true);
 
     try {
-      console.log("signup2");
-
       await Auth.confirmSignUp(fields.email, fields.confirmationCode);
-      console.log("signup2");
-      console.log("signup3");
-
       await Auth.signIn(fields.email, fields.password);
-      console.log("signup3");
+
       userHasAuthenticated(true);
       history.push("/");
     } catch (e) {

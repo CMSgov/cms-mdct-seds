@@ -2,9 +2,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { Nav, Navbar, NavItem, NavDropdown } from "react-bootstrap";
-import "./App.scss";
+import "./App.css";
 import Routes from "./Routes";
-import config from "./config";
 import { AppContext } from "./libs/contextLib";
 import { Auth } from "aws-amplify";
 import { onError } from "./libs/errorLib";
@@ -30,28 +29,24 @@ function App() {
         onError(e);
       }
     }
+
     setIsAuthenticating(false);
   }
 
   async function handleLogout() {
-    if (config.LOCAL_LOGIN === "true") {
-      window.localStorage.removeItem("userKey");
-      history.push("/login");
-      history.go(0);
-    } else {
-      await Auth.signOut();
-    }
+    await Auth.signOut();
+
+    userHasAuthenticated(false);
+
     history.push("/login");
   }
-  
-
   return (
     !isAuthenticating && (
       <div className="App container">
         <Navbar fluid collapseOnSelect>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/">SEDS Home</Link>
+              <Link to="/">APS Home</Link>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>

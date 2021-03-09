@@ -6,7 +6,7 @@ import { onError } from "../libs/errorLib";
 import config from "../config";
 import "./NewAmendment.css";
 import { createAmendment } from "../libs/api";
-import { Auth } from "aws-amplify";
+import { currentUserInfo } from "../libs/user";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
@@ -21,16 +21,17 @@ export default function NewAmendment({ fileUpload }) {
   const [urgent, setUrgent] = useState(false);
   const [comments, setComments] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const capitalize = s => {
+  const capitalize = (s) => {
     if (typeof s !== "string") return "";
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
   async function populateUserInfo() {
-    console.log("newam");
-    const userInfo = await Auth.currentSession();
-    console.log("newam");
-    setEmail(userInfo.idToken.payload.email);
+    var userInfo = await currentUserInfo();
+    setEmail(userInfo.attributes.email);
+    setFirstName(capitalize(userInfo.attributes.given_name));
+    setLastName(capitalize(userInfo.attributes.family_name));
+    return userInfo.attributes.email;
   }
 
   populateUserInfo();
@@ -71,7 +72,7 @@ export default function NewAmendment({ fileUpload }) {
         territory,
         urgent,
         comments,
-        attachment
+        attachment,
       });
       history.push("/");
     } catch (e) {
@@ -88,23 +89,23 @@ export default function NewAmendment({ fileUpload }) {
           <FormControl
             value={email}
             disabled={true}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </FormGroup>
         <FormGroup controlId="firstName">
           <ControlLabel>First Name</ControlLabel>
           <FormControl
             value={firstName}
-            disabled={false}
-            onChange={e => setFirstName(capitalize(e.target.value))}
+            disabled={true}
+            onChange={(e) => setFirstName(e.target.value)}
           />
         </FormGroup>
         <FormGroup controlId="lastName">
           <ControlLabel>Last Name</ControlLabel>
           <FormControl
             value={lastName}
-            disabled={false}
-            onChange={e => setLastName(capitalize(e.target.value))}
+            disabled={true}
+            onChange={(e) => setLastName(e.target.value)}
           />
         </FormGroup>
         <FormGroup controlId="territory">
@@ -114,7 +115,7 @@ export default function NewAmendment({ fileUpload }) {
             value={territoryList.filter(function (option) {
               return option.value === territory;
             })}
-            onChange={e => setTerritory(e.value)}
+            onChange={(e) => setTerritory(e.value)}
             options={territoryList}
           />
         </FormGroup>
@@ -123,7 +124,7 @@ export default function NewAmendment({ fileUpload }) {
           <Switch
             controlId="urgent"
             checked={urgent}
-            onChange={e => setUrgent(!urgent)}
+            onChange={(e) => setUrgent(!urgent)}
           />
         </FormGroup>
         <FormGroup controlId="file">
@@ -135,7 +136,7 @@ export default function NewAmendment({ fileUpload }) {
             componentClass="textarea"
             placeholder="Additional comments here"
             value={comments}
-            onChange={e => setComments(e.target.value)}
+            onChange={(e) => setComments(e.target.value)}
           />
         </FormGroup>
         <LoaderButton

@@ -11,19 +11,13 @@ import Amendments from "./containers/Amendments";
 import Profile from "./containers/Profile";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
-import Users from "./components/users/Users";
-import UserEdit from "./components/users/UserEdit";
-
 import {
   s3AmplifyUpload,
   s3LocalUploader,
   s3AmplifyGetURL,
-  s3LocalGetURL
+  s3LocalGetURL,
 } from "./libs/awsLib";
 import config from "./config";
-import Example from "./components/examples";
-import Quarterly from "./containers/Quarterly";
-import UserAdd from "./components/users/UserAdd";
 
 export default function Routes() {
   // This might not be quite the right place for it, but I'm doing
@@ -43,7 +37,7 @@ export default function Routes() {
       accessKeyId: "S3RVER", // This specific key is required when working offline
       secretAccessKey: "S3RVER",
       params: { Bucket: config.s3.BUCKET },
-      endpoint: new AWS.Endpoint(localEndpoint)
+      endpoint: new AWS.Endpoint(localEndpoint),
     });
     s3Upload = s3LocalUploader(s3Client);
     s3URLResolver = s3LocalGetURL(s3Client);
@@ -60,24 +54,9 @@ export default function Routes() {
       <UnauthenticatedRoute exact path="/signup">
         <Signup />
       </UnauthenticatedRoute>
-      <UnauthenticatedRoute exact path="/example">
-        <Example />
-      </UnauthenticatedRoute>
-      <UnauthenticatedRoute exact path="/users">
-        <Users />
-      </UnauthenticatedRoute>
-      <UnauthenticatedRoute exact path="/users/:id/edit">
-        <UserEdit />
-      </UnauthenticatedRoute>
-      <UnauthenticatedRoute exact path="/users/add/user">
-        <UserAdd />
-      </UnauthenticatedRoute>
-      <UnauthenticatedRoute exact path="/profile">
+      <AuthenticatedRoute exact path="/profile">
         <Profile />
-      </UnauthenticatedRoute>
-      <UnauthenticatedRoute exact path="/forms/:state/:year/:quarter">
-        <Quarterly />
-      </UnauthenticatedRoute>
+      </AuthenticatedRoute>
       <AuthenticatedRoute exact path="/amendments/new">
         <NewAmendment fileUpload={s3Upload} />
       </AuthenticatedRoute>
