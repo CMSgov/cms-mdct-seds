@@ -2,41 +2,38 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import LoaderButton from "../components/LoaderButton";
 import "./Profile.css";
 import { Auth } from "aws-amplify";
+import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { Grid, GridContainer } from "@trussworks/react-uswds";
-import { currentUserInfo } from "../libs/user";
 
-export default function Profile({ user }) {
+export default function Profile() {
   const history = useHistory();
-  /* eslint-disable no-unused-vars */
-  const [email, setEmail] = useState(user.email);
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
-  const [role, setRole] = useState(user.role);
-  const [states, setStates] = useState(formatStates(user.states));
-  /* eslint-disable no-unused-vars */
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const capitalize = s => {
+  const capitalize = (s) => {
     if (typeof s !== "string") return "";
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
 
   useEffect(() => {
     function loadProfile() {
-      return currentUserInfo();
+      return Auth.currentUserInfo();
     }
 
     async function onLoad() {
       try {
         const userInfo = await loadProfile();
-        setEmail(userInfo.email);
-        setFirstName(capitalize(userInfo.first_name));
-        setLastName(capitalize(userInfo.last_name));
-        setRole(capitalize(userInfo.role));
-        setStates(formatStates(userInfo.states));
+        setEmail(userInfo.attributes.email);
+        setFirstName(capitalize(userInfo.attributes.given_name));
+        setLastName(capitalize(userInfo.attributes.family_name));
+        setPhoneNumber(
+          formatPhoneNumberForForm(userInfo.attributes.phone_number)
+        );
       } catch (e) {
         onError(e);
       }
@@ -45,45 +42,41 @@ export default function Profile({ user }) {
     onLoad();
   }, []);
 
+  function validatePhoneNumber(phone) {
+    if (phone === "1" || phone === "") return true;
+    return phone.length === 11;
+  }
   function validateForm() {
     return (
-      email.length > 0 && firstName.length > 0 && lastName.length && role.length
+      email.length > 0 &&
+      firstName.length > 0 &&
+      lastName.length &&
+      validatePhoneNumber(phoneNumber)
     );
   }
 
   function saveProfile(user, userAttributes) {
-    console.log("profile.js");
     return Auth.updateUserAttributes(user, userAttributes);
   }
 
-  function formatStates(states) {
-    let statesRefined = "";
-
-    // Sort alphabetically
-    const statesArray = states.split("-").sort();
-
-    // Create string from array, add in commas
-    statesArray.forEach((value, i) => {
-      if (i === 0) {
-        statesRefined += value;
-      } else {
-        statesRefined += ", " + value;
-      }
-    });
-
-    return statesRefined;
+  function formatPhoneNumberForForm(phone) {
+    if (phone == null) return "";
+    return phone.replace("+", "");
   }
 
+  function formatPhoneNumberForSubmission(phone) {
+    if (phone === "1" || phone === "" || phone == null) return "";
+    return "+" + phone.replace("+", "");
+  }
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    console.log("profile.js  2");
     let user = await Auth.currentAuthenticatedUser();
-    console.log("profile.js  2");
     try {
       await saveProfile(user, {
-        first_name: firstName,
-        last_name: lastName
+        given_name: firstName,
+        family_name: lastName,
+        phone_number: formatPhoneNumberForSubmission(phoneNumber),
       });
       history.push("/");
     } catch (e) {
@@ -94,46 +87,47 @@ export default function Profile({ user }) {
 
   return (
     <div className="Profile">
-      <GridContainer className="container">
-        <Grid row>
-          <Grid col={12}>
-            <form onSubmit={handleSubmit}>
-              <FormGroup controlId="email">
-                <ControlLabel>Email</ControlLabel>
-                <FormControl value={email} disabled={true} />
-              </FormGroup>
-              <FormGroup controlId="firstName">
-                <ControlLabel>First Name</ControlLabel>
-                <FormControl
-                  value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
-                  disabled={true}
-                />
-              </FormGroup>
-              <FormGroup controlId="lastName">
-                <ControlLabel>Last Name</ControlLabel>
-                <FormControl
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  disabled={true}
-                />
-              </FormGroup>
-              <FormGroup controlId="role">
-                <ControlLabel>Role</ControlLabel>
-                <FormControl
-                  value={capitalize(role)}
-                  onChange={e => setRole(e.target.value)}
-                  disabled={true}
-                />
-              </FormGroup>
-              <FormGroup controlId="states">
-                <ControlLabel>States</ControlLabel>
-                <FormControl value={states} disabled={true} />
-              </FormGroup>
-            </form>
-          </Grid>
-        </Grid>
-      </GridContainer>
+      <form onSubmit={handleSubmit}>
+        <FormGroup controlId="email">
+          <ControlLabel>Email</ControlLabel>
+          <FormControl value={email} disabled={true} />
+        </FormGroup>
+        <FormGroup controlId="firstName">
+          <ControlLabel>First Name</ControlLabel>
+          <FormControl
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </FormGroup>
+        <FormGroup controlId="lastName">
+          <ControlLabel>Last Name</ControlLabel>
+          <FormControl
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </FormGroup>
+        <FormGroup controlId="phoneNumber">
+          <ControlLabel>Phone</ControlLabel>
+          <PhoneInput
+            value={phoneNumber}
+            country="us"
+            countryCodeEditable={false}
+            disableDropdown={true}
+            enableAreaCodes={false}
+            onChange={(e) => setPhoneNumber(e || "")}
+          />
+        </FormGroup>
+        <LoaderButton
+          block
+          type="submit"
+          bsSize="large"
+          bsStyle="primary"
+          isLoading={isLoading}
+          disabled={!validateForm()}
+        >
+          Save
+        </LoaderButton>
+      </form>
     </div>
   );
 }

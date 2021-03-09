@@ -13,7 +13,7 @@ export default function debug() {
   });
 }
 
-export function init(event) {
+export function init(event, context) {
   logs = [];
 
   // Log API event

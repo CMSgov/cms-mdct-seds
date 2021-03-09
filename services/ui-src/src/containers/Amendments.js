@@ -25,7 +25,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   const [comments, setComments] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const capitalize = s => {
+  const capitalize = (s) => {
     if (typeof s !== "string") return "";
     return s.charAt(0).toUpperCase() + s.slice(1);
   };
@@ -46,7 +46,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           transmittalNumber,
           urgent,
           comments,
-          attachment
+          attachment,
         } = amendment;
         if (attachment) {
           console.log(fileURLResolver);
@@ -118,7 +118,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
         transmittalNumber,
         urgent,
         comments,
-        attachment: attachment || amendment.attachment
+        attachment: attachment || amendment.attachment,
       });
       history.push("/");
     } catch (e) {
@@ -158,7 +158,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
       port: uri.port,
       path: `${uri.pathname}${uri.search}`,
       protocol: uri.protocol,
-      method: "GET"
+      method: "GET",
     };
     var req = http.request(options, function (res) {
       req.abort(); // The presigned S3 URL is only valid for GET requests, but we only want the headers.
@@ -183,7 +183,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             <FormControl
               disabled={true}
               value={transmittalNumber}
-              onChange={e => setTransmittalNumber(e.target.value)}
+              onChange={(e) => setTransmittalNumber(e.target.value)}
             />
           </FormGroup>
           <FormGroup controlId="name">
@@ -211,7 +211,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             <FormControl
               value={email}
               disabled={true}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </FormGroup>
           <FormGroup controlId="territory">
@@ -222,7 +222,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
                 return option.value === territory;
               })}
               isDisabled={true}
-              onChange={e => setTerritory(e.value)}
+              onChange={(e) => setTerritory(e.value)}
               options={territoryList}
             />
           </FormGroup>
@@ -231,7 +231,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             <Switch
               controlId="urgent"
               checked={urgent}
-              onChange={e => setUrgent(!urgent)}
+              onChange={(e) => setUrgent(!urgent)}
             />
           </FormGroup>
           {amendment.attachment && (
@@ -240,7 +240,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
               <FormControl.Static>
                 <button
                   className="link-lookalike"
-                  onClick={e => openAttachment(e, amendment.attachmentURL)}
+                  onClick={(e) => openAttachment(e, amendment.attachmentURL)}
                 >
                   {formatFilename(amendment.attachment)}
                 </button>
@@ -256,7 +256,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             <FormControl
               componentClass="textarea"
               value={comments}
-              onChange={e => setComments(e.target.value)}
+              onChange={(e) => setComments(e.target.value)}
             />
           </FormGroup>
           <LoaderButton

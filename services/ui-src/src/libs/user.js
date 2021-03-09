@@ -4,19 +4,25 @@ import config from "../config";
 const userKey = "userKey";
 
 export async function currentUserInfo() {
-  if (config.LOCAL_LOGIN === "true") {
+  const localLogin = config.LOCAL_LOGIN === "true";
+
+  if (localLogin) {
     return getLocalUserInfo();
   } else {
-    console.log("inside users.js... loggin Auth.currentSession();");
-    console.log(Auth.currentSession());
-    return (await Auth.currentSession()).getIdToken().payload;
+    return Auth.currentUserInfo();
   }
 }
 
 export function getLocalUserInfo() {
-  return JSON.parse(window.localStorage.getItem(userKey));
+  const store = window.localStorage;
+
+  const info = JSON.parse(store.getItem(userKey));
+
+  return info;
 }
 
 export async function loginLocalUser(userInfo) {
-  window.localStorage.setItem(userKey, JSON.stringify(userInfo));
+  const store = window.localStorage;
+
+  store.setItem(userKey, JSON.stringify(userInfo));
 }
