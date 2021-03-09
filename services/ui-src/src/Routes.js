@@ -57,12 +57,12 @@ export default function Routes() {
       <AuthenticatedRoute exact path="/profile">
         <Profile />
       </AuthenticatedRoute>
-      <AuthenticatedRoute exact path="/amendments/new">
+      <UnauthenticatedRoute exact path="/amendments/new">
         <NewAmendment fileUpload={s3Upload} />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path="/amendments/:id">
+      </UnauthenticatedRoute>
+      <UnauthenticatedRoute exact path="/amendments/:id">
         <Amendments fileUpload={s3Upload} fileURLResolver={s3URLResolver} />
-      </AuthenticatedRoute>
+      </UnauthenticatedRoute>
       <Route>
         <NotFound />
       </Route>
